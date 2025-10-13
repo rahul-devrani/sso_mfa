@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ app_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding-top: 100px; font-size: 1.2rem; }
+        .btn { display: inline-block; padding: 12px 24px; color: white; text-decoration: none; border-radius: 5px; margin: 10px; }
+        .login-btn { background-color: #007bff; }
+        .logout-btn { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to {{ app_name }}!</h1>
+    
+    {% if user %}
+        <p>Hello, <strong>{{ user.username }}</strong>! You are logged in.</p>
+        <a href="http://localhost:5000/logout?redirect={{ request.url_root }}" class="btn logout-btn">Logout</a>
+    {% else %}
+        <p>You are not logged in.</p>
+        <a href="{{ url_for('login') }}" class="btn login-btn">Login with SSO</a>
+    {% endif %}
+</body>
+</html>
