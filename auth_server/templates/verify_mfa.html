@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; text-align: center;}
+        input { width: 100%; box-sizing: border-box; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .flash { padding: 10px; margin-bottom: 10px; border-radius: 4px; }
+        .flash.error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h2>Two-Factor Authentication</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <p>Enter the code from your authenticator app to complete login.</p>
+    <form method="POST">
+        <input type="text" name="otp_code" placeholder="6-digit code" required autocomplete="off">
+        <button type="submit">Verify</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Successful</title>
+    <style>body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; text-align: center;}</style>
+</head>
+<body>
+    <h2>Registration Successful!</h2>
+    <p><strong>IMPORTANT:</strong> Scan this QR code with your authenticator app to setup MFA.</p>
+    <img src="data:image/png;base64,{{ qr_code }}" alt="MFA QR Code">
+    <p style="margin-top: 20px;"><a href="{{ url_for('login') }}">Proceed to Login</a></p>
+</body>
+</html>

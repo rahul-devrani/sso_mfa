@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth Server Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding-top: 100px; }
+        .mfa-enabled { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Auth Server</h1>
+    <p>Hello, <strong>{{ user.username }}</strong>. You are logged into the SSO system.</p>
+    
+    <p class="mfa-enabled">✓ Multi-Factor Authentication (MFA) is active on your account.</p>
+    
+    <p style="margin-top: 30px;"><a href="{{ url_for('logout') }}">Logout</a></p>
+</body>
+</html>
