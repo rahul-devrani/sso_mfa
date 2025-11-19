@@ -1,18 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data_theme="light">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auth Server Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding-top: 100px; }
-        .mfa-enabled { color: green; font-weight: bold; }
+        body { padding-top: 2rem; }
+        .container { max-width: 800px; } 
+        .flash { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid transparent; }
+        .flash.success { background-color: #d4edda; color: #155724; }
+        .flash.error { background-color: #f8d7da; color: #721c24; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--muted-border-color);
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+        .dashboard-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .dashboard-header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-header p {
+            font-size: 1.2rem;
+            color: var(--muted-color);
+            margin: 0;
+        }
+        .workflow-steps { list-style-type: none; padding-left: 0; }
+        .workflow-steps li {
+            position: relative;
+            padding: 1rem 1rem 1rem 2.5rem;
+            margin-bottom: 1rem;
+            background-color: var(--card-background-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: var(--border-radius);
+        }
+        .workflow-steps li::before {
+            content: counter(step);
+            counter-increment: step;
+            position: absolute;
+            left: 1rem;
+            top: 1.2rem;
+            font-weight: bold;
+            background-color: var(--primary-color);
+            color: var(--primary-background-color);
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .mfa-status {
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+        .mfa-status.enabled { background-color: #d4edda; border: 1px solid #155724; }
+        .mfa-status.disabled { background-color: #f8d7da; border: 1px solid #721c24; }
     </style>
 </head>
 <body>
-    <h1>Auth Server</h1>
-    <p>Hello, <strong>{{ user.username }}</strong>. You are logged into the SSO system.</p>
+    <main class="container">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <header class="dashboard-header">
+            <h1>Auth Server</h1>
+            <p>Hello, <strong>{{ user.username }}</strong>. You are logged into the SSO system.</p>
+        </header>
+
+        <article>
+            <header><h3>Security Management</h3></header>
+            
+            {% if db_user.mfa_enabled %}
+                <div class="mfa-status enabled">
+                    <p style="margin:0;"><strong>✓ Multi-Factor Authentication (MFA) is ON</strong></p>
+                </div>
+                <a href="{{ url_for('disable_mfa') }}" role="button" class="contrast" style="margin-top: 1rem; width: 100%;">Disable MFA</a>
+            {% else %}
+                <div class="mfa-status disabled">
+                    <p style="margin:0;"><strong>✗ Multi-Factor Authentication (MFA) is OFF</strong></p>
+                </div>
+                <a href="{{ url_for('enable_mfa') }}" role="button" class="primary" style="margin-top: 1rem; width: 100%;">Enable MFA</a>
+            {% endif %}
+        </article>
+        <article>
+            <header>
+                <h3>How This SSO System Works (The "EasyAuth" Workflow)</h3>
+            </header>
+            
+           <ol class="workflow-steps" style="counter-reset: step;">
+                <li><strong>User visits App:</strong> The user opens App 1, 2, or 3 and clicks on "Login with SSO"</li>
+                <li><strong>Redirect to Auth Server:</strong> The app redirects the user to this "Auth Server" (this page)</li>
+                <li><strong>Authentication:</strong> The user enters their Email and Password</li>
+                <li><strong>MFA Verification:</strong> If MFA is enabled, the system asks for the 6-digit TOTP code</li>
+                <li><strong>JWT Cookie:</strong> Upon successful login, the Auth Server generates a JWT Token (including the user's 'role') and saves it in a secure cookie</li>
+                <li><strong>Redirect back to App:</strong> The server redirects the user back to the original App</li>
+                <li><strong>Logged In:</strong> App 1 (and 2, 3) reads the shared cookie to validate the session and enforce Role-Based Access Control (RBAC)</li>
+                <li><strong>Global Logout:</strong> Clicking Logout deletes the cookie, instantly logging the user out of all connected apps</li>
+            </ol>
+        </article>
+
+    </main>
     
-    <p class="mfa-enabled">✓ Multi-Factor Authentication (MFA) is active on your account.</p>
-    
-    <p style="margin-top: 30px;"><a href="{{ url_for('logout') }}">Logout</a></p>
+    <footer>
+        Made by OS-V-T228 -> EasyAuth
+    </footer>
 </body>
 </html>
