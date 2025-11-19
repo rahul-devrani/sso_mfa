@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body { padding-top: 2rem; }
+        main { max-width: 600px; text-align: center; }
+        h1 { color: var(--danger-color); }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--muted-border-color);
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <hgroup>
+            <h1>Access Denied (403)</h1>
+            <p>Your account (<strong>{{ user.username }}</strong>) has the <strong>'{{ user.role }}'</strong> role</p>
+            <p>You need the <strong>'admin'</strong> role to access this page</p>
+        </hgroup>
+        
+        <a href="http://localhost:5001" role="button" class="secondary">Go to App 1 (Notes)</a>
+        <a href="http://localhost:5000/logout?redirect={{ request.url_root }}" role="button" class="contrast">Logout & Switch Account</a>
+
+    </main>
+    
+    <footer>
+        Made by OS-V-T228 -> EasyAuth
+    </footer>
+</body>
+</html>
