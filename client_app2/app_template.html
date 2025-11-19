@@ -1,23 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
-    <title>{{ app_name }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ content.title or app_name }} - SSO Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding-top: 100px; font-size: 1.2rem; }
-        .btn { display: inline-block; padding: 12px 24px; color: white; text-decoration: none; border-radius: 5px; margin: 10px; }
-        .login-btn { background-color: #007bff; }
-        .logout-btn { background-color: #dc3545; }
+        nav {
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--muted-border-color);
+        }
+        nav ul.nav-left { margin-right: auto; }
+        nav ul.nav-right { margin-left: auto; }
+        nav .user-info { margin-bottom: 0; padding-right: 1rem; }
+        
+        main.container { padding-top: 1rem; } 
+        
+        .welcome-header {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: var(--card-background-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: var(--border-radius);
+        }
+        
+        .app-content-box {
+            padding: 1.5rem; 
+            border: 1px solid var(--muted-border-color);
+            border-radius: var(--border-radius);
+        }
+        .app-content-box ul { list-style: none; padding-left: 0; }
+        .app-content-box li { margin-bottom: 0.75rem; }
+        
+        .task-list li { display: flex; align-items: center; }
+        .task-list .icon { margin-right: 10px; font-weight: bold; }
+        .task-list .done { text-decoration: line-through; color: var(--muted-color); }
+        
+        .settings-list strong { min-width: 150px; display: inline-block; }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--muted-border-color);
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to {{ app_name }}!</h1>
     
-    {% if user %}
-        <p>Hello, <strong>{{ user.username }}</strong>! You are logged in.</p>
-        <a href="http://localhost:5000/logout?redirect={{ request.url_root }}" class="btn logout-btn">Logout</a>
-    {% else %}
-        <p>You are not logged in.</p>
-        <a href="{{ url_for('login') }}" class="btn login-btn">Login with SSO</a>
-    {% endif %}
+    <nav>
+        <ul class="nav-left">
+            <li><strong>{{ app_name }}</strong></li>
+        </ul>
+        <ul class="nav-right">
+            {% if user %}
+                <li><p class="user-info">Logged in as: <strong>{{ user.username }}</strong></p></li>
+                <li>
+                    <a href="http://localhost:5000/logout?redirect={{ request.url_root }}" 
+                       role="button" class="secondary">Logout (SSO)</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ url_for('login') }}" role="button">Login with SSO</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% if user %}
+            <header class="welcome-header">
+                <h2>Welcome back to {{ app_name }}, {{ user.username }}!</h2>
+                <p>Successfully logged-in using SSO.</p>
+            </header>
+
+            <article class="app-content-box">
+                <header>
+                    <h3>{{ content.title }}</h3>
+                </header>
+
+                {% if content.notes %}
+                <ul>
+                    {% for note in content.notes %}
+                        <li><mark>{{ note }}</mark></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                {% if content.tasks %}
+                <ul class="task-list">
+                    {% for task in content.tasks %}
+                        <li class="{{ 'done' if task.done else '' }}">
+                            <span class="icon">{% if task.done %}[Done]{% else %}[To Do]{% endif %}</span>
+                            {{ task.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if content.settings %}
+                <ul class="settings-list">
+                    {% for item in content.settings %}
+                        <li><strong>{{ item.name }}:</strong> {{ item.value }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </article>
+
+        {% else %}
+            <hgroup>
+                <h1>Welcome to {{ app_name }}</h1>
+                <h2>Please log in to see your dashboard.</h2>
+            </hgroup>
+            <a href="{{ url_for('login') }}" role="button" class="primary" style="padding: 1rem 2rem; font-size: 1.2rem;">Login with SSO</a>
+        {% endif %}
+    </main>
+
+    <footer>
+        Made by OS-V-T228 -> EasyAuth
+    </footer>
+
 </body>
 </html>
