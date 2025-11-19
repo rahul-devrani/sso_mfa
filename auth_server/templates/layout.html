@@ -1,20 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title or 'SSO Auth Server' }}</title>
+    <title>{% block title %}SSO Auth Server{% endblock %}</title> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
         body { padding-top: 2rem; }
-        .container { max-width: 800px; }
+        .container.auth-form { max-width: 500px; } 
         .flash { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid transparent; }
         .flash.success { background-color: #d4edda; color: #155724; }
         .flash.error { background-color: #f8d7da; color: #721c24; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--muted-border-color);
+            color: var(--muted-color);
+            font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <main class="container">
+    <main class="container {% block container_class %}{% endblock %}">
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -22,7 +30,13 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+        
         {% block content %}{% endblock %}
+
     </main>
+    
+    <footer>
+        Made by OS-V-T228 -> EasyAuth
+    </footer>
 </body>
 </html>
