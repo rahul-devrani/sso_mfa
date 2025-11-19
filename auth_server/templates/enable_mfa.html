@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable MFA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body { padding-top: 2rem; }
+        .container.auth-form { max-width: 500px; }
+        .flash { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid transparent; }
+        .flash.success { background-color: #d4edda; color: #155724; }
+        .flash.error { background-color: #f8d7da; color: #721c24; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--muted-border-color);
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="container auth-form">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <article style="text-align: center;">
+            <hgroup>
+                <h2>Enable Multi-Factor Authentication</h2>
+                <p>Scan the code and verify to enable MFA</p>
+            </hgroup>
+
+            <p><strong>Step 1:</strong> Scan this QR code with your authenticator app</p>
+            
+            <img src="data:image/png;base64,{{ qr_code }}" alt="MFA QR Code" style="border: 5px solid var(--primary-color); border-radius: 8px;">
+            
+            <p style="margin-top: 1.5rem;"><strong>Step 2:</strong> Enter the 6-digit code from the app to verify</p>
+            
+            <form method="POST">
+                <input type="text" name="otp_code" placeholder="6-digit code" required autocomplete="off" 
+                       minlength="6" maxlength="6"
+                       style="text-align: center; font-size: 1.2rem; letter-spacing: 0.5rem;">
+                <button type="submit" class="primary">Verify & Enable</button>
+            </form>
+            
+            <a href="{{ url_for('dashboard') }}" role="button" class="secondary outline" style="margin-top: 1rem;">Cancel</a>
+        </article>
+
+    </main>
+    
+    <footer>
+        Made by OS-V-T228 -> EasyAuth
+    </footer>
+</body>
+</html>

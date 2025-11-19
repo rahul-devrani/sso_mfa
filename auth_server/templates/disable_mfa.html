@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable MFA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body { padding-top: 2rem; }
+        .container.auth-form { max-width: 500px; }
+        .flash { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid transparent; }
+        .flash.success { background-color: #d4edda; color: #155724; }
+        .flash.error { background-color: #f8d7da; color: #721c24; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--muted-border-color);
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="container auth-form">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <hgroup style="text-align: center;">
+            <h2>Disable Two-Factor Authentication</h2>
+            <p>Enter a code from your authenticator app to confirm</p>
+        </hgroup>
+        
+        <article>
+            <form method="POST">
+                <label for="otp_code">Verification Code</label>
+                <input type="text" name="otp_code" id="otp_code" 
+                       placeholder="6-digit code" required autocomplete="off" 
+                       minlength="6" maxlength="6" 
+                       style="text-align: center; font-size: 1.2rem; letter-spacing: 0.5rem;">
+                
+                <button type="submit" class="contrast">Confirm & Disable MFA</button>
+            </form>
+            <a href="{{ url_for('dashboard') }}" role="button" class="secondary outline" style="margin-top: 1rem;">Cancel</a>
+        </article>
+
+    </main>
+    
+    <footer>
+        Made by OS-V-T228 -> EasyAuth
+    </footer>
+</body>
+</html>
